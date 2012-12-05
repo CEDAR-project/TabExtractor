@@ -4,6 +4,7 @@
 
 import csv
 from xlrd import open_workbook
+from Levenshtein import ratio
 
 class Extractor:
     """An XLS structure extractor"""
@@ -11,7 +12,7 @@ class Extractor:
     def __init__(self):
         # Struct initialization
         self.municipalitiesPerSheet = {}
-        
+        self.similarityThreshold = 0.9
 
     def doExtraction(self, inputDataFile, col, row, lim):
         """Extract municipality names from specified location, column 
@@ -29,51 +30,46 @@ class Extractor:
         for i in range(row-1, lim):
             self.cell = self.sourceSheet.cell(i, col)
             if self.cell.value.strip() != "":
-                self.municipalitiesPerSheet[self.inputDataFile].add(self.cell.value)
-
+                self.municipalitiesPerSheet[self.inputDataFile].add(self.cell.value.strip())
 
     def serialize(self, outputDataFile):
         """Write municipalities found in specified output"""
 
         # print "Serializing to output file..."
 
-        with open(outputDataFile, 'wb') as csvfile:
-            self.csvwriter = csv.writer(csvfile, delimiter=',',
-                                    quotechar='\'', quoting=csv.QUOTE_MINIMAL)
-            temp = set()
-            for key in self.municipalitiesPerSheet.keys():
-#                self.csvwriter.writerow([key] + list(self.municipalitiesPerSheet[key]))
+        temp = set()
 
-                for m in list(self.municipalitiesPerSheet[key]):
-                    temp.add(m.encode('utf8'))
- #                   print m.encode('utf8')
-            for m in sorted(list(temp)):                
-                print m,',',
-                if m in self.municipalitiesPerSheet['data/VT_1859_01_H3A.xls']:
-                    print 'x,',
-                else:
-                    print ',',
-                if m in self.municipalitiesPerSheet['data/VT_1869_01_H1.xls']:
-                    print 'x,',
-                else:
-                    print ',',
-                if m in self.municipalitiesPerSheet['data/VT_1879_10_H1.xls']:
-                    print 'x,',
-                else:
-                    print ',',
-                if m in self.municipalitiesPerSheet['data/VT_1889_12_H1.xls']:
-                    print 'x,',
-                else:
-                    print ',',
-                if m in self.municipalitiesPerSheet['data/VT_1899_01_H1.xls']:
-                    print 'x,',
-                else:
-                    print ',',
-                if m in self.municipalitiesPerSheet['data/BRT_1909_01_T.xls']:
-                    print 'x'
-                else:
-                    print ''
-
+        for key in self.municipalitiesPerSheet.keys():
+            
+            for m in list(self.municipalitiesPerSheet[key]):
+                temp.add(m.encode('utf8'))
+                
+        for m in sorted(list(temp)):                
+            print '"'+m+'"',',',
+            if m in self.municipalitiesPerSheet['data/VT_1859_01_H3A.xls']:
+                print 'x,',
+            else:
+                print ',',
+            if m in self.municipalitiesPerSheet['data/VT_1869_01_H1.xls']:
+                print 'x,',
+            else:
+                print ',',
+            if m in self.municipalitiesPerSheet['data/VT_1879_10_H1.xls']:
+                print 'x,',
+            else:
+                print ',',
+            if m in self.municipalitiesPerSheet['data/VT_1889_12_H1.xls']:
+                print 'x,',
+            else:
+                print ',',
+            if m in self.municipalitiesPerSheet['data/VT_1899_01_H1.xls']:
+                print 'x,',
+            else:
+                print ',',
+            if m in self.municipalitiesPerSheet['data/BRT_1909_01_T.xls']:
+                print 'x'
+            else:
+                print ''
 
 if __name__ == "__main__":
     munExtractorInstance = Extractor()
@@ -84,7 +80,6 @@ if __name__ == "__main__":
     munExtractorInstance.doExtraction('data/VT_1899_01_H1.xls', 0, 5, 2796)
     munExtractorInstance.doExtraction('data/BRT_1909_01_T.xls', 0, 8, 36935)
     munExtractorInstance.serialize('output/output.csv')
-
 
 __author__ = "Albert Meronyo-Penyuela"
 __copyright__ = "Copyright 2012, VU University Amsterdam"
