@@ -83,7 +83,7 @@ if __name__ == "__main__":
     munExtractorInstance.doExtraction('data/VT_1889_12_H1.xls', 0, 6, 2164)
     munExtractorInstance.doExtraction('data/VT_1899_01_H1.xls', 0, 5, 2796)
     munExtractorInstance.doExtraction('data/BRT_1909_01_T.xls', 0, 8, 36935)
-    munExtractorInstance.serialize('output.csv')
+    munExtractorInstance.serialize('output/output.csv')
 
 
 __author__ = "Albert Meronyo-Penyuela"
